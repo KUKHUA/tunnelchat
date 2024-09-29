@@ -26,6 +26,10 @@ TunnelChat is ideal for:
 - **Proof of Concept**: Exploring the feasibility of non-WebSocket-based chat systems.
 - **Small-Scale Projects**: Simple chat applications where security and scalability are not primary concerns.
 
+## Libaries Used
+- Marked.js for markdown rendering [Marked.js](https://marked.js.org)
+- DomPurify for sanitizing HTML [DomPurify](https://cure53.de/purify)
+
 ## Contributing
 
 Contributions are welcome! If you have ideas for improving TunnelChat or fixing issues, please open a pull request or submit an issue on GitHub.
