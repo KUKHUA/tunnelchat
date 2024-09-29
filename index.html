@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tunnel Chat</title>
+    <link rel="stylesheet" href="index.css">
+    <script src="index.js"></script>
+    <script src="lib/purify.min.js"></script>
+    <script src="lib/marked.min.js"></script>
+</head>
+<body>
+    <div>
+        <h1 id="tunnelChatHeader">Tunnel Chat</h1>
+        <h2 id="userNameHeader">You are... not in a tunnel.</h2>
+        <div id="chatBox"></div>
+        <textarea id="messageBox" placeholder="Enter your message here&#10;You can use MarkDown and HTML.&#10;Don't try scripts though."></textarea>
+        <button id="sendButton">Send</button>
+    </div>
+    <div id="buttons">
+        <button id="createButton">Create Chat</button>
+        <button id="joinButton">Join Chat</button>
+    </div>
+</body>
+</html>

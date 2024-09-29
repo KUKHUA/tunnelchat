@@ -1,0 +1,86 @@
+body {
+    background-color: #0F0F0F;
+    color: white;
+    font-family: 'Source Code Pro', monospace;
+    border-radius: 10px;
+    transition: 0.5s;
+}
+
+input,textarea {
+    font-family: 'Source Code Pro', monospace;
+    font-weight: 500;
+    background-color: #272727;
+    color: #ffffff;
+    padding: 10px;
+    border-radius: 5px;
+    margin-left: 5px;
+    margin-right: 5px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    border:none;
+    outline: none;
+    font-size: medium;
+    transition: 0.5s;
+}
+
+input:focus {
+    background-color: #5a5858;
+    border:none;
+    transition: 0.5s;
+}
+
+button {
+    font-family: 'Source Code Pro', monospace;
+    font-weight: 500;
+    border:none;
+    background-color: #272727;
+    color: #ffffff;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    margin-left: 5px;
+    margin-right: 5px;
+    transition: 0.5s;
+}
+
+button:hover {
+    background-color: #5a5858;
+    transition: 0.5s;
+}
+
+#buttons {
+    padding: 10px;
+}
+
+#messageBox {
+    padding: 10px;
+    width: 75%;
+    height: 8vh;
+    margin: 10px;
+}
+
+#chatBox {
+    background-color: #272727;
+    border-radius: 10px;
+    padding: 10px;
+    margin: 10px;
+    height: 50vh;
+    width: 80vw;
+    overflow-y: scroll;
+    transition: 0.5s;
+    /* centering the chatbox */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+#userNameHeader:hover {
+    cursor: pointer;
+    color: #5a5858;
+    transition: 0.5s;
+}
+.hideme {
+  display: none;
+  transition: 0.5s;
+}
