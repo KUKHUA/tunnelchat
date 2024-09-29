@@ -31,4 +31,4 @@ TunnelChat is ideal for:
 Contributions are welcome! If you have ideas for improving TunnelChat or fixing issues, please open a pull request or submit an issue on GitHub.
 
 ## License
- This project is lincesed under Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0) license. For more information, see the [LICENSE](LICENSE) file.
+ This project is lincesed under Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0) license. For more information, see the [](LICENSE) file.
