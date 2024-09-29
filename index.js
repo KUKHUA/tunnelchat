@@ -139,6 +139,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.log("INFO: Adding new user to key store.");
                 addToKeyStore(JSONMessage.userId, JSONMessage.publicKey);
             }
+
+            if(JSONMessage.hash != currentHash) {
+                console.log(`INFO: Message from ${JSONMessage.displayName} has been tampered with, expected hash ${JSONMessage.hash} but got ${currentHash}.`);
+                displayMessage(1, "System", `The below message from ${JSONMessage.displayName} has been tampered with. Please be cautious.`);
+            }
     
             if (JSONMessage.message && JSONMessage.userId && JSONMessage.displayName && JSONMessage.time) {
                 console.log(`INFO: Displaying message from ${JSONMessage.displayName}.`);
@@ -148,7 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.log(`INFO: Previous message hash is now ${previousMessageHash}`);
             }
         } catch (error) {
-            console.log("INFO: We are the first message.");
+            console.log("INFO: We are the first message." + error);
             firstMessageSetup();
         }
     }
@@ -169,14 +174,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function displayMessage(messageUserId, displayName, message) {
         // Sanitize inputs
         displayName = DOMPurify.sanitize(displayName)
-            .replace(/\n/g, '')
-            .replace(/<br\s*\/?>/gi, '')
-            .replace(/&10;/g, '');
         message = DOMPurify.sanitize(marked.parse(message))
-            .replace(/\n/g, '')
-            .replace(/<br\s*\/?>/gi, '')
-            .replace(/&10;/g, '');
-        
         // Check if the message is from the current user
         if (messageUserId === userId) {
             displayName = "You";
