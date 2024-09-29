@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const txtTunnelInstance = new URL("https://lluck.hackclub.app");
+    const txtTunnelInstance = new URL("https://backend.basicfan.eu.org");
     let tunnelObj;
     let tunnelTickInterval = 3000;
     let userId;
