@@ -65,22 +65,47 @@ button:hover {
     border-radius: 10px;
     padding: 10px;
     margin: 10px;
-    height: 50vh;
-    width: 80vw;
+    max-height: 60vh;
+    max-width: 85vw;
     overflow-y: scroll;
     transition: 0.5s;
-    /* centering the chatbox */
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
 }
+
 
 #userNameHeader:hover {
     cursor: pointer;
     color: #5a5858;
     transition: 0.5s;
 }
+
 .hideme {
   display: none;
   transition: 0.5s;
+}
+
+img {
+    max-width: 40vw;
+    max-height: 40vh;
+    border-radius: 15px;
+}
+
+video {
+    max-width: 60vw;
+    max-height: 60vh;
+    border-radius: 15px;
+}
+
+audio {
+    max-width: 30vw;
+    max-height: 30vh;
+    border-radius: 15px;
+}
+
+embed {
+    max-width: 100vw;
+    max-height: 200vh;
+    min-height: 40vh;
+    border-radius: 15px;
 }

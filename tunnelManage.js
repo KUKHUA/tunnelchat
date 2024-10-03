@@ -1,203 +1,230 @@
 /**
- * Periodically fetches incoming messages from the tunnel.
+ * Initializes a tunnel stream using EventSource.
+ * @async
  */
-async function tunnelTick() {
-    const tunnelIncomingURL = new URL(`/tunnel?id=${window.tunnelObj.id}`, window.txtTunnelInstance);
-    try {
-        const response = await fetch(tunnelIncomingURL);
-        const data = await response.json();
-        window.handleIncoming(data);
-    } catch (error) {
-        console.error('Error:', error);
-    }
+async function tunnelStream() {
+  try {
+    window.tunnelEventSource = new EventSource(
+      window.txtTunnelInstance + `tunnel/stream?id=${window.tunnelObj.id}`,
+    );
+
+    window.tunnelEventSource.onmessage = (event) => {
+      console.log(event.data);
+      handelIncoming(event.data);
+    };
+  } catch (error) {
+    console.error("Error initializing tunnel stream:", error);
+    localMessage(1, "System", `Error initializing tunnel stream: ${error.message}`);
+  }
 }
 
 /**
- * Creates a new tunnel and initializes the chat.
+ * Creates a new tunnel and initializes the stream.
+ * @async
  */
 async function createTunnel() {
-    const createTunnelURL = new URL("/tunnel/create", window.txtTunnelInstance);
-    try {
-        const response = await fetch(createTunnelURL);
-        if (!response.ok) throw new Error("ERROR: Network response was not ok");
-        window.tunnelObj = await response.json();
-        console.log(window.tunnelObj);
-        await generateKeys();
-        window.tunnelChatHeader.textContent = `Tunnel Chat Code: ${window.tunnelObj.id}`;
-        window.displayName = prompt("Please set your display name:");
-        window.userNameHeader.textContent = `You are... ${window.displayName}`;
-        startTunnelTick();
-    } catch (error) {
-        console.error('There has been a problem with your fetch operation:', error);
-    }
+  try {
+    let tunnelId = new URL("tunnel/create", window.txtTunnelInstance);
+    let response = await fetch(tunnelId);
+    if (!response.ok) throw new Error("Failed to create tunnel");
+    let tunnelObj = await response.json();
+    window.tunnelObj = tunnelObj;
+    generateKeys();
+    window.displayName = prompt("Enter your display name:");
+    window.userNameHeader.innerText = `You are... ${window.displayName}`;
+    window.tunnelChatHeader.innerText = `Tunnel ID: ${window.tunnelObj.id}`;
+    tunnelStream();
+  } catch (error) {
+    console.error("Error creating tunnel:", error);
+    localMessage(1, "System", `Error creating tunnel: ${error.message}`);
+  }
 }
 
 /**
- * Joins an existing tunnel using a tunnel code.
+ * Joins an existing tunnel and initializes the stream.
+ * @async
  */
 async function joinTunnel() {
-    const tunnelId = prompt("Please enter the tunnel code");
-    if (tunnelId === null) return;
+  try {
+    let tunnelId = prompt("Enter the tunnel ID:");
     window.tunnelObj = { id: tunnelId };
-    const checkTunnelURL = new URL(`/tunnel?id=${window.tunnelObj.id}`, window.txtTunnelInstance);
-    try {
-        const response = await fetch(checkTunnelURL);
-        if (!response.ok) throw new Error('Network response was not ok');
-        window.tunnelObj = await response.json();
-        console.log(window.tunnelObj);
-        await generateKeys();
-        window.tunnelChatHeader.textContent = `Tunnel Chat Code: ${window.tunnelObj.id}`;
-        window.displayName = prompt("Please set your display name:");
-        window.userNameHeader.textContent = `You are... ${window.displayName}`;
-        startTunnelTick();
-        firstMessageSetup();
-    } catch (error) {
-        console.error('There has been a problem with your fetch operation:', error);
+    generateKeys();
+    window.displayName = prompt("Enter your display name:");
+    window.userNameHeader.innerText = `You are... ${window.displayName}`;
+    window.tunnelChatHeader.innerText = `Tunnel ID: ${window.tunnelObj.id}`;
+    tunnelStream();
+  } catch (error) {
+    console.error("Error joining tunnel:", error);
+    localMessage(1, "System", `Error joining tunnel: ${error.message}`);
+  }
+}
+
+/**
+ * Handles incoming messages from the tunnel stream.
+ * @async
+ * @param {string} content - The incoming message content.
+ */
+async function handelIncoming(content) {
+  try {
+    let message = JSON.parse(content);
+
+    if (!message.userId || !message.displayName || !message.message) {
+      throw new Error("Received message with missing details.");
     }
-}
 
-/**
- * Handles incoming messages and processes them.
- * @param {Object} content - The incoming message content.
- */
-async function handleIncoming(content) {
-    const currentMessage = content.content;
-    try {
-        const JSONMessage = JSON.parse(currentMessage);
-        const currentHash = await hashMessage(JSONMessage.message);
-
-        if (JSONMessage.hash === window.previousMessageHash || currentHash === window.previousMessageHash) {
-            console.log("INFO: Message already processed.");
-            return;
-        }
-
-        if (JSONMessage.userId && JSONMessage.publicKey && !window.keys[JSONMessage.userId]) {
-            console.log("INFO: Adding new user to key store.");
-            addToKeyStore(JSONMessage.userId, JSONMessage.publicKey);
-        }
-
-        if (JSONMessage.hash != currentHash) {
-            console.log(`INFO: Message from ${JSONMessage.displayName} has been tampered with, expected hash ${JSONMessage.hash} but got ${currentHash}.`);
-            displayMessage(1, "System", `The below message from ${JSONMessage.displayName} has been tampered with. Please be cautious.`);
-            updateHash(JSONMessage.message);
-            return;
-        }   
-
-        if (JSONMessage.message && JSONMessage.userId && JSONMessage.displayName && JSONMessage.time) {
-            console.log(`INFO: Displaying message from ${JSONMessage.displayName}.`);
-            logLag(JSONMessage.userId, JSONMessage.displayName, JSONMessage.time);
-            //let verified = await verifySignature(JSONMessage.message, JSONMessage.signature, JSONMessage.publicKey);
-            //console.log(`INFO: Signature verified: ${verified}`);
-            displayMessage(JSONMessage.userId, JSONMessage.displayName, JSONMessage.message);
-            window.previousMessageHash = currentHash;
-            console.log(`INFO: Previous message hash is now ${window.previousMessageHash}`);
-        }
-    } catch (error) {
-        const currentHash = await hashMessage(content.content);
-        if(content.content !== "" && currentHash !== window.previousMessageHash) {
-            displayMessage(1, "System", `Someone sent a message that could not be processed. Please create a new tunnel if this persists.`);
-            updateHash(content.content);
-        } else {
-            console.log("INFO: We are the first message." + error);
-            firstMessageSetup();
-        }
+    if (message.name == "System") {
+      message.name == "Dummy";
     }
-}
 
-/**
- * Sets up the first message in the chat.
- */
-async function firstMessageSetup() {
-    sendAPIMessage("I have joined the chat!");
-}
-
-/**
- * Displays a message in the chat log.
- * @param {number} messageUserId - The ID of the user sending the message.
- * @param {string} displayName - The display name of the user.
- * @param {string} message - The message content.
- */
-function displayMessage(messageUserId, displayName, message) {
-    // Sanitize inputs
-    displayName = DOMPurify.sanitize(displayName)
-    message = DOMPurify.sanitize(unEscapeSpecialChars(marked.parse(message)))
-    // Check if the message is from the current user
-    if (messageUserId === window.userId) {
-        displayName = "You";
+    if (!window.keys[message.userId]) {
+      window.keys[message.userId] = message.publicKey;
     }
-    
-    // Create a new div element for the message area
-    const messageArea = document.createElement('div');
 
-    // Create a bold element for the display name
-    const nameArea = document.createElement('b');
-    nameArea.textContent = displayName;
+    if (message.hash !== (await hashMessage(message.message))) {
+      throw new Error(`The message from ${message.displayName} failed hash verification.`);
+    }
 
-    // Create a span element for the timestamp
-    const timeArea = document.createElement('span');
-    timeArea.textContent = ` - ${new Date().toLocaleTimeString()} :`;
+    if (message.attachmentList && message.attachmentData && message.displayName) {
+      localMessage(message.userId, message.displayName, message.message);
+      localMessage(1, "System", `<p>Attachment from ${message.displayName}</p> ${renderAttachment(message.attachmentList, message.attachmentData)}`);
+      return;
+    }
 
-    // Append the timestamp to the name area
-    nameArea.appendChild(timeArea);
-
-    // Create a paragraph element for the message text
-    const messageText = document.createElement('span');
-    messageText.innerHTML = message;
-
-    // Append the name area and message text to the message area
-    messageArea.appendChild(nameArea);
-    messageArea.appendChild(messageText);
-    
-    // Append the new message element to the chat log
-    window.chatLog.appendChild(messageArea);
+    localMessage(message.userId, message.displayName, message.message);
+  } catch (error) {
+    console.error("Error handling incoming message:", error);
+    localMessage(1, "System", `Error parsing incoming message: ${error.message}`);
+  }
 }
 
 /**
- * Sends an outgoing message to the tunnel.
- * @param {string} content - The message content.
+ * Renders an attachment based on its file type.
+ * @param {string} attachmentList - The list of attachments.
+ * @param {string} attachmentData - The data of the attachment.
+ * @returns {string} - The HTML string for the attachment.
  */
-function handleOutgoing(content) {
-    const outgoingUrl = new URL(`/tunnel/send?id=${window.tunnelObj.id}&content=${encodeURIComponent(content)}`, window.txtTunnelInstance);
-    fetch(outgoingUrl);
+function renderAttachment(attachmentList, attachmentData) {
+  let fileType = attachmentList.split(".").pop();
+  console.log(fileType);
+  if (fileType == "png" || fileType == "jpg" || fileType == "jpeg" || fileType == "gif") {
+    let img = document.createElement("img");
+    img.src = attachmentData;
+    return img.outerHTML;
+  } else if (fileType == "mp4" || fileType == "webm" || fileType == "mov" || fileType == "avi" || fileType == "mkv") {
+    let video = document.createElement("video");
+    video.src = attachmentData;
+    video.controls = true;
+    return video.outerHTML;
+  } else if (fileType == "mp3" || fileType == "wav" || fileType == "flac" || fileType == "ogg") {
+    let audio = document.createElement("audio");
+    audio.src = attachmentData;
+    audio.controls = true;
+    return audio.outerHTML;
+  } else if (fileType == "pdf") {
+    let embed = document.createElement("embed");
+    embed.src = attachmentData;
+    embed.width = "100%";
+    embed.height = "100%";
+    return embed.outerHTML;
+  } else {
+    return `<a href="${attachmentData}" target="_blank">${attachmentList}</a>`;
+  }
 }
 
 /**
- * Sends a message typed by the user.
+ * Handles outgoing messages to the tunnel.
+ * @async
+ * @param {string} content - The content to send.
+ * @param {string} sendMethod - The method to use for sending (e.g., "post").
+ */
+async function handelOutgoing(content, sendMethod) {
+  try {
+    content = escapeSpecialChars(content);
+    if (sendMethod == "post") {
+      await fetch(
+        new URL(`tunnel/send/post`, window.txtTunnelInstance),
+        {
+          method: "POST",
+          body: JSON.stringify({ id: window.tunnelObj.id, content: content }),
+        },
+      );
+    } else {
+      let sendURL = new URL(
+        `tunnel/send?id=${window.tunnelObj.id}&content=${content}`,
+        window.txtTunnelInstance,
+      );
+      await fetch(sendURL);
+    }
+  } catch (error) {
+    console.error("Error sending message:", error);
+    localMessage(1, "System", `Error sending message: ${error.message}`);
+  }
+}
+
+/**
+ * Sends a message from the user.
+ * @async
  */
 async function sendMessage() {
-    const messageBox = document.getElementById('messageBox');
-    const message = messageBox.value;
-    if (message.trim() === "") {
-        alert("Message cannot be empty");
-        return;
-    }
-    const messageObj = {
-        userId: window.userId,
-        displayName: window.displayName,
-        publicKey: window.keys[window.userId].publicKey,
-        time: Date.now(),
-        message : escapeSpecialChars(message),
-        hash: await hashMessage(escapeSpecialChars(message)),
-        signature: await signMessage(escapeSpecialChars(message), window.keys[window.userId].privateKey)
-    };
-    console.log(messageObj);
-    handleOutgoing(JSON.stringify(messageObj));
-    messageBox.value = "";
+  let userMessage = window.messageBox.value;
+  window.messageBox.value = "";
+  if (userMessage.length > 0) {
+    sendPublicMessage(userMessage);
+  } else {
+    localMessage(1, "System", "Message is empty.");
+  }
 }
 
 /**
- * Sends an API message.
+ * Sends a public message with optional attachments.
+ * @async
+ * @param {string} message - The message content.
+ * @param {string} [attachList] - The list of attachments.
+ * @param {string} [attachData] - The data of the attachments.
+ * @param {string} [sendMethod] - The method to use for sending (e.g., "post").
+ */
+async function sendPublicMessage(message, attachList, attachData, sendMethod) {
+  try {
+    let messageObject = {
+      userId: window.userId,
+      displayName: window.displayName,
+      message: message,
+      hash: await hashMessage(message),
+      attachmentList: attachList,
+      attachmentData: attachData
+    };
+
+    handelOutgoing(JSON.stringify(messageObject), sendMethod);
+  } catch (error) {
+    console.error("Error sending public message:", error);
+    localMessage(1, "System", `Error sending public message: ${error.message}`);
+  }
+}
+
+/**
+ * Displays a local message in the chat log.
+ * @param {number} id - The user ID.
+ * @param {string} name - The display name.
  * @param {string} message - The message content.
  */
-async function sendAPIMessage(message) {
-    const messageObj = {
-        userId: window.userId,
-        displayName: window.displayName,
-        publicKey: window.keys[window.userId].publicKey,
-        time: Date.now(),
-        message : escapeSpecialChars(message),
-        hash: await hashMessage(escapeSpecialChars(message)),
-        signature: await signMessage(escapeSpecialChars(message), window.keys[window.userId].privateKey)
-    };
-    handleOutgoing(JSON.stringify(messageObj));
+function localMessage(id, name, message) {
+  if (name == window.displayName) {
+    name = "You";
+  }
+
+  name = DOMPurify.sanitize(name);
+
+  if (name !== "System") {
+    message = DOMPurify.sanitize(marked.parse(message));
+  }
+
+  let nameElement = document.createElement("b");
+  let currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+  nameElement.innerText = `${name} - at ${currentTime}: `;
+  nameElement.title = `User ID of ${name} is ${id}`;
+  let messageContainer = document.createElement("div");
+  messageContainer.appendChild(nameElement);
+  messageContainer.innerHTML += message;
+  window.chatLog.appendChild(messageContainer);
+  window.chatLog.scrollTop = window.chatLog.scrollHeight;
 }
