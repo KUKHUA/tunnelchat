@@ -8,6 +8,15 @@ async function tunnelStream() {
       window.txtTunnelInstance + `tunnel/stream?id=${window.tunnelObj.id}`,
     );
 
+    if (navigator.serviceWorker.controller) {
+      navigator.serviceWorker.controller.postMessage({
+          type: 'START_SSE',
+          url: window.txtTunnelInstance + `tunnel/stream?id=${window.tunnelObj.id}`,
+      });
+      } else {
+        console.error('No active service worker controller found.');
+      }
+
     window.tunnelEventSource.onmessage = (event) => {
       console.log(event.data);
       handelIncoming(event.data);

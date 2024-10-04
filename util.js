@@ -7,15 +7,16 @@ function restoreTunnel() {
       return;
     }
   } 
+  
 
-  let data = JSON.parse(restoreData);
-  window.tunnelObj = { id: data.tunnelId };
-  window.displayName = data.displayName;
+  window.tunnelObj = { id: restoreData.tunnelId };
+  window.displayName = restoreData.displayName;
   window.userNameHeader.textContent = `You are... ${window.displayName}`;
   window.tunnelChatHeader.textContent = `Tunnel ID: ${window.tunnelObj.id}`;
   console.log(`INFO: Restored tunnel ${window.tunnelObj.id}`);
   localMessage(1, "System", `Restored tunnel ${window.tunnelObj.id}`);
-  joinTunnel();
+  generateKeys();
+  tunnelStream();
 }
 /**
  * Changes the display name of the user.

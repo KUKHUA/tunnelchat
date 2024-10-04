@@ -28,4 +28,14 @@ document.addEventListener("DOMContentLoaded", () => {
   userNameHeader.addEventListener("click", changeDisplayName);
   attachButton.addEventListener("click", addAttachment);
   tunnelChatHeader.addEventListener("click", copyTunnelId);
+  restoreTunnel();
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/service_worker.js')
+    .then(registration => {
+        console.log('Service Worker registered with scope:', registration.scope);
+    })
+    .catch(error => {
+        console.error('Service Worker registration failed:', error);
+    });
+}
 });
