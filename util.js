@@ -1,7 +1,22 @@
-/**
- * Utility functions
- */
+function restoreTunnel() {
+  let restoreData = localStorage["dataHistory"];
+  restoreData = JSON.parse(restoreData);
+  if (restoreData && Date.now() - JSON.parse(restoreData).time > 7200000) {
+    let userResponse = confirm(`It has been a while since you last used the tunnel. Would you like to restore Tunnel ${JSON.parse(restoreData).tunnelId}?`);
+    if (!userResponse) {
+      return;
+    }
+  } 
 
+  let data = JSON.parse(restoreData);
+  window.tunnelObj = { id: data.tunnelId };
+  window.displayName = data.displayName;
+  window.userNameHeader.textContent = `You are... ${window.displayName}`;
+  window.tunnelChatHeader.textContent = `Tunnel ID: ${window.tunnelObj.id}`;
+  console.log(`INFO: Restored tunnel ${window.tunnelObj.id}`);
+  localMessage(1, "System", `Restored tunnel ${window.tunnelObj.id}`);
+  joinTunnel();
+}
 /**
  * Changes the display name of the user.
  */
@@ -138,4 +153,13 @@ async function addAttachment() {
       alert("Failed to add attachment.");
     }
   }
+}
+
+function copyTunnelId() {
+  if (!window.tunnelObj) {
+    alert("Please create or join a tunnel first.");
+    return;
+  }
+  navigator.clipboard.writeText(window.tunnelObj.id);
+  localMessage(1, "System", "Tunnel ID copied to clipboard.");
 }

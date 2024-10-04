@@ -34,6 +34,7 @@ async function createTunnel() {
     window.userNameHeader.innerText = `You are... ${window.displayName}`;
     window.tunnelChatHeader.innerText = `Tunnel ID: ${window.tunnelObj.id}`;
     tunnelStream();
+    localStorage["dataHisory"] = JSON.stringify({tunnelId: window.tunnelObj.id, displayName: window.displayName, time: Date.now()});
   } catch (error) {
     console.error("Error creating tunnel:", error);
     localMessage(1, "System", `Error creating tunnel: ${error.message}`);
@@ -47,12 +48,13 @@ async function createTunnel() {
 async function joinTunnel() {
   try {
     let tunnelId = prompt("Enter the tunnel ID:");
-    window.tunnelObj = { id: tunnelId };
-    generateKeys();
+    window.tunnelObj = { id: tunnelId.toUpperCase() };
+    await generateKeys();
     window.displayName = prompt("Enter your display name:");
     window.userNameHeader.innerText = `You are... ${window.displayName}`;
     window.tunnelChatHeader.innerText = `Tunnel ID: ${window.tunnelObj.id}`;
     tunnelStream();
+    localStorage["dataHisory"] = JSON.stringify({tunnelId: window.tunnelObj.id, displayName: window.displayName, time: Date.now()});
     sendPublicMessage("I have joined the tunnel.");
   } catch (error) {
     console.error("Error joining tunnel:", error);
@@ -81,7 +83,12 @@ async function handelIncoming(content) {
       window.keys[message.userId] = message.publicKey;
     }
 
-    if (message.hash !== (await hashMessage(unescapeSpecialChars(message.message)))) {
+    if(!await verifyMessage(unescapeSpecialChars(message.message),
+    unescapeSpecialChars(message.signature), message.publicKey)){
+      localMessage(1,"System",`The message from ${message.displayName} failed signature verification.`);
+    }
+
+    if (message.hash !== (await hashMessage(unescapeSpecialChars(message.message)))){
       localMessage(1,"System",`The message from ${message.displayName} failed hash verification.`);
     }
 
@@ -91,7 +98,7 @@ async function handelIncoming(content) {
       return;
     }
 
-    localMessage(message.userId, message.displayName, message.message);
+    localMessage(message.userId, message.displayName, unescapeSpecialChars(message.message));
   } catch (error) {
     console.error("Error handling incoming message:", error);
     localMessage(1, "System", `Error parsing incoming message: ${error.message}`);
@@ -136,9 +143,9 @@ function renderAttachment(attachmentList, attachmentData) {
  * Handles outgoing messages to the tunnel.
  * @async
  * @param {string} content - The content to send.
- * @param {string} sendMethod - The method to use for sending (e.g., "post").
  */
-async function handelOutgoing(content, sendMethod) {
+async function handelOutgoing(content) {
+  localStorage["dataHisory"] = JSON.stringify({tunnelId: window.tunnelObj.id, displayName: window.displayName, time: Date.now()});
   try {
     content = escapeSpecialChars(content);
       await fetch(
@@ -182,6 +189,8 @@ async function sendPublicMessage(message, attachList, attachData) {
       displayName: window.displayName,
       message: message,
       hash: await hashMessage(message),
+      publicKey: window.keys[window.userId].publicKey,
+      signature: await signMessage(message),
       attachmentList: attachList,
       attachmentData: attachData
     };

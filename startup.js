@@ -27,4 +27,5 @@ document.addEventListener("DOMContentLoaded", () => {
   sendButton.addEventListener("click", sendMessage);
   userNameHeader.addEventListener("click", changeDisplayName);
   attachButton.addEventListener("click", addAttachment);
+  tunnelChatHeader.addEventListener("click", copyTunnelId);
 });

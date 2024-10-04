@@ -22,7 +22,6 @@ async function generateKeys() {
         };
         console.log(window.keys, window.userId);
     } catch (error) {
-        console.error("Error generating keys:", error);
         localMessage(window.userId, "generateKeys", error.message);
         throw new Error("Key generation failed: " + error.message);
     }
@@ -43,8 +42,81 @@ async function hashMessage(message) {
         const hashArray = Array.from(new Uint8Array(hashBuffer));
         return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
     } catch (error) {
-        console.error("Error hashing message:", error);
         localMessage(window.userId, "hashMessage", error.message);
         throw new Error("Message hashing failed: " + error.message);
+    }
+}
+
+/**
+ * 
+ * @param {string} message the message to sign 
+ * @returns 
+ */
+
+async function signMessage(message) {
+    try {
+        const encoder = new TextEncoder();
+        const data = encoder.encode(message);
+        const key = await window.crypto.subtle.importKey(
+            "jwk",
+            window.keys[window.userId].privateKey,
+            {
+                name: "ECDSA",
+                namedCurve: "P-384"
+            },
+            true,
+            ["sign"]
+        );
+        const signature = await window.crypto.subtle.sign(
+            {
+                name: "ECDSA",
+                hash: {name: "SHA-256"}
+            },
+            key,
+            data
+        );
+        return btoa(String.fromCharCode(...new Uint8Array(signature)));
+    } catch (error) {
+        localMessage(window.userId, "signMessage", error.message);
+        throw new Error("Message signing failed: " + error.message);
+    }
+}
+
+/**
+ * 
+ * @param {string} message 
+ * @param {*} signature 
+ * @param {*} publicKey 
+ * @returns 
+ */
+async function verifyMessage(message, signature, publicKey) {
+    try {
+        signature = new Uint8Array(atob(signature).split('').map(c => c.charCodeAt(0)));
+        signature = new Uint8Array(signature);
+        const encoder = new TextEncoder();
+        const data = encoder.encode(message);
+        const key = await window.crypto.subtle.importKey(
+            "jwk",
+            publicKey,
+            {
+                name: "ECDSA",
+                namedCurve: "P-384"
+            },
+            true,
+            ["verify"]
+        );
+        const result = await window.crypto.subtle.verify(
+            {
+                name: "ECDSA",
+                hash: {name: "SHA-256"}
+            },
+            key,
+            signature,
+            data
+        );
+        return result;
+    } catch (error) {
+        localMessage(window.userId, "verifyMessage", error.message);
+        throw new Error("Message verification failed: " + error.message);
     }
 }
