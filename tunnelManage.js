@@ -40,6 +40,7 @@ async function createTunnel() {
     window.tunnelObj = tunnelObj;
     generateKeys();
     window.displayName = prompt("Enter your display name:");
+    window.displayName = DOMPurify.sanitize(window.displayName);
     window.userNameHeader.innerText = `You are... ${window.displayName}`;
     window.tunnelChatHeader.innerText = `Tunnel ID: ${window.tunnelObj.id}`;
     tunnelStream();
@@ -60,6 +61,7 @@ async function joinTunnel() {
     window.tunnelObj = { id: tunnelId.toUpperCase() };
     await generateKeys();
     window.displayName = prompt("Enter your display name:");
+    window.displayName = DOMPurify.sanitize(window.displayName);
     window.userNameHeader.innerText = `You are... ${window.displayName}`;
     window.tunnelChatHeader.innerText = `Tunnel ID: ${window.tunnelObj.id}`;
     tunnelStream();
@@ -85,7 +87,7 @@ async function handelIncoming(content) {
     }
 
     if (message.name == "System") {
-      message.name == "Dummy";
+      message.name = "Dummy";
     }
 
     if (!window.keys[message.userId]) {
@@ -226,6 +228,8 @@ function localMessage(id, name, message) {
 
   if (name !== "System") {
     message = DOMPurify.sanitize(marked.parse(message));
+  } else {
+    message = DOMPurify.sanitize(message,{ADD_DATA_URI_TAGS: ['a', 'img', 'video', 'audio', 'embed'], ALLOWED_TAGS: ['a', 'img', 'video', 'audio', 'embed']});
   }
 
   let nameElement = document.createElement("b");
