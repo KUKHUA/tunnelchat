@@ -24,12 +24,13 @@ function restoreTunnel() {
 function changeDisplayName() {
   let oldDisplayName = window.displayName;
   const newDisplayName = prompt("Please enter your new display name:");
+  newDisplayName = DOMPurify.sanitize(newDisplayName);
   if (newDisplayName && newDisplayName.trim() !== "") {
     window.displayName = newDisplayName;
     window.userNameHeader.textContent = `You are... ${window.displayName}`;
     console.log(`INFO: Display name changed to ${window.displayName}`);
     sendPublicMessage(
-      `Display name changed from ${oldDisplayName} to ${window.displayName}`,
+      `Display name changed from ${escapeSpecialChars(oldDisplayName)} to ${escapeSpecialChars(window.displayName)}`,
     );
   } else {
     alert("Display name cannot be empty");
