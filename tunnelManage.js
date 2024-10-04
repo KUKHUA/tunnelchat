@@ -155,7 +155,7 @@ async function handelOutgoing(content, sendMethod) {
 }
 
 /**
- * Sends a message from the user.
+ * Sends a message from the UI.
  * @async
  */
 async function sendMessage() {
@@ -174,7 +174,6 @@ async function sendMessage() {
  * @param {string} message - The message content.
  * @param {string} [attachList] - The list of attachments.
  * @param {string} [attachData] - The data of the attachments.
- * @param {string} [sendMethod] - The method to use for sending (e.g., "post").
  */
 async function sendPublicMessage(message, attachList, attachData) {
   try {

@@ -67,26 +67,6 @@ function unescapeSpecialChars(str) {
 }
 
 /**
- * Logs the lag time for a user.
- *
- * @param {string} userId - The ID of the user.
- * @param {string} displayName - The display name of the user.
- * @param {number} time - The time to compare against the current time.
- */
-function logLag(userId, displayName, time) {
-  const lag = time - Date.now();
-  if (lag > 500) {
-    console.log(
-      `INFO: ${displayName}(${userId}) is lagging behind by ${lag}ms`,
-    );
-  } else if (lag < -500) {
-    console.log(`INFO: ${displayName}(${userId}) is ahead by ${-lag}ms`);
-  } else {
-    console.log(`INFO: ${displayName}(${userId}) is in sync`);
-  }
-}
-
-/**
  * Adds an attachment by allowing the user to select a file and then sending it as a public message.
  * 
  * @async
@@ -94,6 +74,40 @@ function logLag(userId, displayName, time) {
  * @returns {Promise<void>}
  */
 async function addAttachment() {
+  if(!window.tunnelObj) {
+    alert("Please create or join a tunnel first.");
+    return;
+  }
+
+  if(!window.showOpenFilePicker){
+    let fileInput = document.getElementById("attachmentInput");
+    fileInput.click();
+    fileInput.onchange = async function() {
+      let file = fileInput.files[0];
+      let fileName = file.name;
+      let reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onloadend = function() {
+        try {
+          let base64data = reader.result.split(',')[1];
+          let mimeType = file.type;
+          let dataUri = `data:${mimeType};base64,${base64data}`;
+          sendPublicMessage("I have attached a file.", fileName, dataUri);
+          return; 
+        } catch (error) {
+          localMessage(1, "System", `Error processing file data: ${error.message}`);
+          alert("Failed to process the file data.");
+          return;
+        }
+      }
+      reader.onerror = function() {
+        localMessage(1, "System", `Error reading file: ${reader.error.message}`);
+        alert("Failed to read the file.");
+        return;
+      }
+    }
+  }
+
   try {
     let selectedFiles = await showOpenFilePicker();
     if (!selectedFiles.length) {
