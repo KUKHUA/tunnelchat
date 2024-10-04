@@ -106,36 +106,36 @@ async function addAttachment() {
         return;
       }
     }
-  }
-
-  try {
-    let selectedFiles = await showOpenFilePicker();
-    if (!selectedFiles.length) {
-      throw new Error("No file selected");
-    }
-    let file = selectedFiles[0];
-    let fileData = await file.getFile();
-    let fileName = fileData.name;
-    let fileBlob = await fileData.slice();
-    let reader = new FileReader();
-    reader.readAsDataURL(fileBlob);
-    reader.onloadend = function() {
-      try {
-        let base64data = reader.result.split(',')[1];
-        let mimeType = fileData.type;
-        let dataUri = `data:${mimeType};base64,${base64data}`;
-        sendPublicMessage("I have attached a file.", fileName, dataUri);
-      } catch (error) {
-        localMessage(1, "System", `Error processing file data: ${error.message}`);
-        alert("Failed to process the file data.");
+  } else {
+    try {
+      let selectedFiles = await showOpenFilePicker();
+      if (!selectedFiles.length) {
+        throw new Error("No file selected");
       }
+      let file = selectedFiles[0];
+      let fileData = await file.getFile();
+      let fileName = fileData.name;
+      let fileBlob = await fileData.slice();
+      let reader = new FileReader();
+      reader.readAsDataURL(fileBlob);
+      reader.onloadend = function() {
+        try {
+          let base64data = reader.result.split(',')[1];
+          let mimeType = fileData.type;
+          let dataUri = `data:${mimeType};base64,${base64data}`;
+          sendPublicMessage("I have attached a file.", fileName, dataUri);
+        } catch (error) {
+          localMessage(1, "System", `Error processing file data: ${error.message}`);
+          alert("Failed to process the file data.");
+        }
+      }
+      reader.onerror = function() {
+        localMessage(1, "System", `Error reading file: ${reader.error.message}`);
+        alert("Failed to read the file.");
+      }
+    } catch (error) {
+      localMessage(1, "System", `Error adding attachment: ${error.message}`);
+      alert("Failed to add attachment.");
     }
-    reader.onerror = function() {
-      localMessage(1, "System", `Error reading file: ${reader.error.message}`);
-      alert("Failed to read the file.");
-    }
-  } catch (error) {
-    localMessage(1, "System", `Error adding attachment: ${error.message}`);
-    alert("Failed to add attachment.");
   }
 }
