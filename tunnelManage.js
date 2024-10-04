@@ -53,6 +53,7 @@ async function joinTunnel() {
     window.userNameHeader.innerText = `You are... ${window.displayName}`;
     window.tunnelChatHeader.innerText = `Tunnel ID: ${window.tunnelObj.id}`;
     tunnelStream();
+    sendPublicMessage("I have joined the tunnel.");
   } catch (error) {
     console.error("Error joining tunnel:", error);
     localMessage(1, "System", `Error joining tunnel: ${error.message}`);
@@ -80,8 +81,8 @@ async function handelIncoming(content) {
       window.keys[message.userId] = message.publicKey;
     }
 
-    if (message.hash !== (await hashMessage(message.message))) {
-      throw new Error(`The message from ${message.displayName} failed hash verification.`);
+    if (message.hash !== (await hashMessage(unescapeSpecialChars(message.message)))) {
+      localMessage(1,"System",`The message from ${message.displayName} failed hash verification.`);
     }
 
     if (message.attachmentList && message.attachmentData && message.displayName) {
@@ -140,7 +141,6 @@ function renderAttachment(attachmentList, attachmentData) {
 async function handelOutgoing(content, sendMethod) {
   try {
     content = escapeSpecialChars(content);
-    if (sendMethod == "post") {
       await fetch(
         new URL(`tunnel/send/post`, window.txtTunnelInstance),
         {
@@ -148,13 +148,6 @@ async function handelOutgoing(content, sendMethod) {
           body: JSON.stringify({ id: window.tunnelObj.id, content: content }),
         },
       );
-    } else {
-      let sendURL = new URL(
-        `tunnel/send?id=${window.tunnelObj.id}&content=${content}`,
-        window.txtTunnelInstance,
-      );
-      await fetch(sendURL);
-    }
   } catch (error) {
     console.error("Error sending message:", error);
     localMessage(1, "System", `Error sending message: ${error.message}`);
@@ -183,7 +176,7 @@ async function sendMessage() {
  * @param {string} [attachData] - The data of the attachments.
  * @param {string} [sendMethod] - The method to use for sending (e.g., "post").
  */
-async function sendPublicMessage(message, attachList, attachData, sendMethod) {
+async function sendPublicMessage(message, attachList, attachData) {
   try {
     let messageObject = {
       userId: window.userId,
@@ -194,7 +187,7 @@ async function sendPublicMessage(message, attachList, attachData, sendMethod) {
       attachmentData: attachData
     };
 
-    handelOutgoing(JSON.stringify(messageObject), sendMethod);
+    handelOutgoing(JSON.stringify(messageObject));
   } catch (error) {
     console.error("Error sending public message:", error);
     localMessage(1, "System", `Error sending public message: ${error.message}`);

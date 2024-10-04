@@ -109,3 +109,27 @@ embed {
     min-height: 40vh;
     border-radius: 15px;
 }
+
+code {
+    display: block;
+    background-color: #1e1e1e;
+    color: #f8f8f2;
+    padding: 15px;
+    border-radius: 8px;
+    font-family: "Workbench", monospace;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.5;
+    margin: 10px 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow-x: auto;
+    border: 1px solid #333;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+code:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: box-shadow 0.3s ease-in-out;
+}
+

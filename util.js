@@ -44,6 +44,29 @@ function escapeSpecialChars(str) {
 }
 
 /**
+ * Unescapes special characters in a string.
+ *
+ * @param {string} str - The string to unescape.
+ * @returns {string} - The unescaped string.
+ */
+function unescapeSpecialChars(str) {
+  return str.replace(/%23|%3C|%3E|%3F/g, (encoded) => {
+    switch (encoded) {
+      case '%23':
+        return '#';
+      case '%3C':
+        return '<';
+      case '%3E':
+        return '>';
+      case '%3F':
+        return '?';
+      default:
+        return encoded;
+    }
+  });
+}
+
+/**
  * Logs the lag time for a user.
  *
  * @param {string} userId - The ID of the user.
@@ -87,7 +110,7 @@ async function addAttachment() {
         let base64data = reader.result.split(',')[1];
         let mimeType = fileData.type;
         let dataUri = `data:${mimeType};base64,${base64data}`;
-        sendPublicMessage("I have attached a file.", fileName, dataUri, "post");
+        sendPublicMessage("I have attached a file.", fileName, dataUri);
       } catch (error) {
         localMessage(1, "System", `Error processing file data: ${error.message}`);
         alert("Failed to process the file data.");

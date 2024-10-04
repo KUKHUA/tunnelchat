@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tunnel Chat</title>
     <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Workbench&display=swap" rel="stylesheet">
     <script src="startup.js"></script>
     <script src="util.js"></script>
     <script src="crypto.js"></script>
@@ -18,8 +22,8 @@
         <h2 id="userNameHeader">You are... not in a tunnel.</h2>
         <div id="chatBox"></div>
         <textarea id="messageBox" placeholder="Enter your message here&#10;You can use MarkDown and HTML.&#10;Don't try scripts though."></textarea>
-        <button id="addAttachmentButton">Add Attachment</button>
-        <button id="sendButton">Send</button>
+        <button id="addAttachmentButton"><span class="material-symbols-outlined">attach_file</span></button>
+        <button id="sendButton"><span class="material-symbols-outlined">send</span></button>
     </div>
     <div id="buttons">
         <button id="createButton">Create Chat</button>
