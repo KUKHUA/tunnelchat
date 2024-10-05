@@ -139,12 +139,6 @@ function renderAttachment(attachmentList, attachmentData) {
     audio.src = attachmentData;
     audio.controls = true;
     return audio.outerHTML;
-  } else if (fileType == "pdf") {
-    let embed = document.createElement("embed");
-    embed.src = attachmentData;
-    embed.width = "100%";
-    embed.height = "100%";
-    return embed.outerHTML;
   } else {
     return `<a href="${attachmentData}" target="_blank">${attachmentList}</a>`;
   }
