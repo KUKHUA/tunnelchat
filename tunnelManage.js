@@ -113,8 +113,8 @@ async function handelIncoming(content) {
       usersInTunnel[message.userId] = message.displayName;
       let userList = document.getElementById("userList");
       let userItem = document.createElement("li");
-      userItem.innerText = message.displayName;
-      userItem.title = `User ID: ${message.userId}`;
+      userItem.innerText = DOMPurify.sanitize(message.displayName);
+      userItem.title = `User ID: ${DOMPurify.sanitize(message.userId)}`;
       userList.appendChild(userItem);
     }
 
