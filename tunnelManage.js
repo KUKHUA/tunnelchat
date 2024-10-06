@@ -109,6 +109,15 @@ async function handelIncoming(content) {
       return;
     }
 
+    if(!usersInTunnel[message.userId]){
+      usersInTunnel[message.userId] = message.displayName;
+      let userList = document.getElementById("userList");
+      let userItem = document.createElement("li");
+      userItem.innerText = message.displayName;
+      userItem.title = `User ID: ${message.userId}`;
+      userList.appendChild(userItem);
+    }
+
     localMessage(message.userId, message.displayName, unescapeSpecialChars(message.message));
   } catch (error) {
     console.error("Error handling incoming message:", error);
