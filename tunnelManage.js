@@ -40,7 +40,7 @@ async function createTunnel() {
     window.tunnelObj = tunnelObj;
     generateKeys();
     window.displayName = prompt("Enter your display name:");
-    window.displayName = DOMPurify.sanitize(window.displayName);
+    window.displayName = DOMPurify.sanitize(window.displayName,window.cleanConfig);
     window.userNameHeader.innerText = `You are... ${window.displayName}`;
     window.tunnelChatHeader.innerText = `Tunnel ID: ${window.tunnelObj.id}`;
     tunnelStream();
@@ -61,7 +61,7 @@ async function joinTunnel() {
     window.tunnelObj = { id: tunnelId.toUpperCase() };
     await generateKeys();
     window.displayName = prompt("Enter your display name:");
-    window.displayName = DOMPurify.sanitize(window.displayName);
+    window.displayName = DOMPurify.sanitize(window.displayName,window.cleanConfig);
     window.userNameHeader.innerText = `You are... ${window.displayName}`;
     window.tunnelChatHeader.innerText = `Tunnel ID: ${window.tunnelObj.id}`;
     tunnelStream();
@@ -113,8 +113,8 @@ async function handelIncoming(content) {
       usersInTunnel[message.userId] = message.displayName;
       let userList = document.getElementById("userList");
       let userItem = document.createElement("li");
-      userItem.innerText = DOMPurify.sanitize(message.displayName);
-      userItem.title = `User ID: ${DOMPurify.sanitize(message.userId)}`;
+      userItem.innerText = DOMPurify.sanitize(message.displayName,window.cleanConfig);
+      userItem.title = `User ID: ${DOMPurify.sanitize(message.userId,window.cleanConfig)}`;
       userList.appendChild(userItem);
     }
 
@@ -227,12 +227,12 @@ function localMessage(id, name, message) {
     name = "You";
   }
 
-  name = DOMPurify.sanitize(name);
+  name = DOMPurify.sanitize(name,window.cleanConfig);
 
   if (name !== "System") {
-    message = DOMPurify.sanitize(marked.parse(message));
+    message = DOMPurify.sanitize(marked.parse(message), window.cleanConfig);
   } else {
-    message = DOMPurify.sanitize(message,{ADD_DATA_URI_TAGS: ['a', 'img', 'video', 'audio', 'embed'], ALLOWED_TAGS: ['a', 'img', 'video', 'audio', 'embed']});
+    message = DOMPurify.sanitize(message,{ADD_DATA_URI_TAGS: ['a', 'img', 'video', 'audio', ], ALLOWED_TAGS: ['a', 'img', 'video', 'audio', ]});
   }
 
   let nameElement = document.createElement("b");
