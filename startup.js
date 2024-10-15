@@ -11,6 +11,12 @@ document.addEventListener("DOMContentLoaded", () => {
     ALLOWED_ATTR: ['href', 'src'],
     FORBID_ATTR: ['style']
   }
+  window.cleanConfigAttachment = {
+    ADD_DATA_URI_TAGS: ['a', 'img', 'video', 'audio', ], 
+    ALLOWED_TAGS: ['i', 'a', 'b', 'p', 'img', 'br', 'video', 'strong', 'audio'],
+    ALLOWED_ATTR: ['href', 'src'],
+    FORBID_ATTR: ['style']
+  }
 
   const createButton = document.getElementById("createButton");
   const joinButton = document.getElementById("joinButton");
