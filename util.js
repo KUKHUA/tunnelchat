@@ -24,7 +24,7 @@ function restoreTunnel() {
 function changeDisplayName() {
   let oldDisplayName = window.displayName;
   const newDisplayName = prompt("Please enter your new display name:");
-  newDisplayName = DOMPurify.sanitize(newDisplayName);
+  newDisplayName = DOMPurify.sanitize(newDisplayName,window.cleanConfig);
   if (newDisplayName && newDisplayName.trim() !== "") {
     window.displayName = newDisplayName;
     window.userNameHeader.textContent = `You are... ${window.displayName}`;
