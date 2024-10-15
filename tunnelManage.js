@@ -232,7 +232,7 @@ function localMessage(id, name, message) {
   if (name !== "System") {
     message = DOMPurify.sanitize(marked.parse(message), window.cleanConfig);
   } else {
-    message = DOMPurify.sanitize(message,{ADD_DATA_URI_TAGS: ['a', 'img', 'video', 'audio', ], ALLOWED_TAGS: ['a', 'img', 'video', 'audio', ]});
+    message = DOMPurify.sanitize(message,window.cleanConfigAttachment);
   }
 
   let nameElement = document.createElement("b");
