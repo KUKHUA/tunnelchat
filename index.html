@@ -4,35 +4,82 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tunnel Chat</title>
-    <link rel="stylesheet" href="index.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Workbench&display=swap" rel="stylesheet">
-    <script src="startup.js"></script>
-    <script src="util.js"></script>
-    <script src="crypto.js"></script>
-    <script src="tunnelManage.js"></script>
-    <script src="lib/purify.min.js"></script>
-    <script src="lib/marked.min.js"></script>
+    <link rel="stylesheet" href="libs/googleFont/icon.css"/>
+    <link href="libs/googleFont/font.css" rel="stylesheet">
+    <link rel="stylesheet" href="libs/bootstrap/bootstrap.min.css">
+    <script src="libs/bootstrap/bootstrap.bundle.min.js"></script>
+    <script src="libs/bootstrap/popper.min.js"></script>
+    <style>
+        .hideme {
+            display: none;
+        }
+    </style>
+    <script>
+        function validateInputBox() {
+            let username = document.getElementById("userNameInput").value;
+            const alert = document.querySelector(".alert");
+            alert.classList.add("hideme");
+            alert.innerHTML = ""; // Reset alert message
+
+            if (username.length < 2 || username.length > 20) {
+                alert.classList.remove("hideme");
+                if (username.length > 20) {
+                    alert.innerHTML = "Username is too long!";
+                } else {
+                    alert.innerHTML = "Username is too short!";
+                }
+            }
+        }
+
+        function redirectToChat(intent) {
+            let username = document.getElementById("userNameInput").value;
+            let debug = document.getElementById("debugCheckbox").checked;
+            let encryption = document.getElementById("encryptionCheckbox").checked;
+            if (username.length >= 2 && username.length <= 20) {
+                let url = `chat/index.html?intent=${intent}&username=${encodeURIComponent(username)}&debug=${debug}&encryption=${encryption}`;
+                window.location.href = url;
+            } else {
+                validateInputBox();
+            }
+        }
+    </script>
 </head>
 <body>
-    <div>
-        <h1 id="tunnelChatHeader">Tunnel Chat</h1>
-        <h2 id="userNameHeader">You are... not in a tunnel.</h2>
-        <div id="chatBox"></div>
-        <textarea id="messageBox" placeholder="Enter your message here&#10;You can use MarkDown and HTML.&#10;Don't try scripts though."></textarea>
-        <div class="userList">
-            <h3>Users in this tunnel:</h3>
-            <ul id="userList"></ul>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <h2 class="text-center">Welcome to Tunnel Chat!</h2>
+                <h3 class="text-center">What is your name?</h3>
+
+                <div class="mb-3">
+                    <input class="form-control" type="text" id="userNameInput" placeholder="username" oninput="validateInputBox();">
+                </div>
+
+                <div class="alert alert-dismissible alert-danger hideme">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    <strong>Oh snap!</strong> 
+                </div>
+
+                <div class="d-flex justify-content-center">
+                    <div class="btn-group mb-3" role="group" aria-label="Basic checkbox toggle button group">
+                        <input type="checkbox" class="btn-check" id="debugCheckbox" autocomplete="off">
+                        <label class="btn btn-primary" for="debugCheckbox">Debug</label>
+                        <input type="checkbox" class="btn-check" id="encryptionCheckbox" autocomplete="off">
+                        <label class="btn btn-primary" for="encryptionCheckbox">Encryption</label>
+                    </div>
+                </div>
+
+                <h4 class="text-center">To get started, do you want to create a new chatroom, or join one?</h4>
+                <div class="d-flex justify-content-center mb-3">
+                    <button id="createButton" class="btn btn-primary me-2" onclick="redirectToChat('create')">
+                        <span class="material-symbols-outlined">add</span> Create
+                    </button>
+                    <button id="joinButton" class="btn btn-secondary" onclick="redirectToChat('join')">
+                        <span class="material-symbols-outlined">login</span> Join
+                    </button>
+                </div>
+            </div>    
         </div>
-        <button id="addAttachmentButton"><span class="material-symbols-outlined">attach_file</span></button>
-        <input type="file" id="attachmentInput" class="hideme">
-        <button id="sendButton"><span class="material-symbols-outlined">send</span></button>
-    </div>
-    <div id="buttons">
-        <button id="createButton">Create Chat</button>
-        <button id="joinButton">Join Chat</button>
     </div>
 </body>
 </html>

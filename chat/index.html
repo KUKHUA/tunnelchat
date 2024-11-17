@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tunnel Chat</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="../libs/googleFont/icon.css"/>
+    <link href="../libs/googleFont/font.css" rel="stylesheet">
+    <link rel="stylesheet" href="../libs/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="../libs/bootstrap/bootstrap.bundle.min.js"></script>
+    <script src="../libs/bootstrap/popper.min.js"></script>
+    <script src="../libs/marked.min.js.js"></script>
+    <script src="../libs/purify.min.js"></script>
+    <script src="../libs/tunnel_lib.js"></script>
+    <script src="uiManager.js"></script>
+    <script src="tunnelManage.js"></script>
+    <style>
+        .hideme {
+            display: none;
+        }
+    </style>
+</head>
+<body class="container"></body>
+    <button type="button" id="openModal" class="btn btn-primary hideme" data-bs-toggle="modal" data-bs-target=".modal">Launch demo modal</button>
+    <div class="modal fade" tabindex="-1">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Please enter a Tunnel ID</h5>
+            </div>
+            <div class="modal-body">
+              <p>
+                A tunnel ID is a 9-character code that looks something like <b>71N74Y26I</b>.
+                It should be shown on the other person's screen.
+                It can be used to join a tunnel that someone else has created.
+              </p>
+                <input type="text" class="form-control" id="tunnelIDInput" placeholder="Enter Tunnel ID">
+            </div>
+            <div class="modal-footer">
+              <button type="button" onclick="joinTunnel(document.getElementById('tunnelIDInput').value.toUpperCase())" data-bs-toggle="modal" data-bs-target=".modal" class="btn btn-primary">Join Tunnel</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    <div class="mt-4">
+        <h1 id="appNameHeader" class="display-4">Tunnel Chat</h1>
+        <h2 id="userNameHeader" class="h5" onclick="changeName();" >You are... not in a tunnel.</h2>
+
+        <div id="chatDisplayDiv" class="border p-3 mb-3 overflow-auto "></div>
+        <div class="input-group mb-3">
+            <textarea id="messageBoxTextArea" class="form-control" placeholder="Enter your message here&#10;You can use MarkDown and HTML.&#10;Don't try scripts though."></textarea>
+            <button id="addAttachmentButton" class="btn btn-outline-secondary" onclick="addAttachment()"><span class="material-symbols-outlined">attach_file</span></button>
+            <input type="file" id="attachmentInput" class="form-control hideme">
+            <button id="sendButton" class="btn btn-outline-primary" onclick="sendMessage()"><span class="material-symbols-outlined">send</span></button>
+        </div>
+    </div>
+</body>
+</html>
