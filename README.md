@@ -18,7 +18,7 @@ Tunnel Chat is a web-based chat application that allows users to create and join
 
 ### Usage
 
-1. Go to the [Tunnel Chat website](https://chat-beta.basicfan.eu.org/).
+1. Go to the [Tunnel Chat website](https://chat.basicfan.eu.org/).
 2. Enter your username and choose to create a new chat room or join an existing one using a tunnel ID.
 
 
