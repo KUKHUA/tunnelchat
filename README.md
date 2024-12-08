@@ -1,14 +1,12 @@
 # Tunnel Chat
 
-Tunnel Chat is a web-based chat application that allows users to create and join chat rooms using unique tunnel IDs. The application supports Markdown and HTML for message formatting and ensures security by sanitizing user inputs.
+Tunnel Chat is a web-based chat application that allows users to create and join chat rooms using unique tunnel IDs. The application supports Markdown and HTML for message formatting.
 
 ## Features
 
 - Create and join chat rooms using unique tunnel IDs
 - Support for Markdown and HTML in messages
-- Input sanitization to prevent XSS attacks
-- User-friendly interface with Bootstrap styling
-- Option to enable encryption for messages
+- Download chat logs esaily
 
 ## Getting Started
 
@@ -19,8 +17,7 @@ Tunnel Chat is a web-based chat application that allows users to create and join
 ### Usage
 
 1. Go to the [Tunnel Chat website](https://chat.basicfan.eu.org/).
-2. Enter your username and choose to create a new chat room or join an existing one using a tunnel ID.
-
+2. Enter your username and choose which room you want to join.
 
 ### Example
 
@@ -36,7 +33,7 @@ This project is licensed under the Attribution-NonCommercial-ShareAlike 4.0 Inte
 
 ## Acknowledgements
 
-- [Bluma](https://bulma.io/) MIT License
-- [Feather Icons](https://feathericons.com/) MIT License
-- [DOMPurify](https://github.com/cure53/DOMPurify)
-- [Marked](https://github.com/markedjs/marked)
+- [Bluma](https://bulma.io/) [MIT License](https://github.com/jgthms/bulma?tab=MIT-1-ov-file)
+- [Google Icons](https://github.com/google/material-design-icons) [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0.html)
+- [DOMPurify](https://github.com/cure53/DOMPurify) [Apache-2.0](https://github.com/cure53/DOMPurify?tab=License-1-ov-file)
+- [Marked](https://github.com/markedjs/marked) [MIT License](https://github.com/markedjs/marked?tab=License-1-ov-file)
