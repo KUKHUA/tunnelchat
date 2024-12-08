@@ -1,0 +1,6 @@
+.vertical-container {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    max-height: 65vh;
+  }

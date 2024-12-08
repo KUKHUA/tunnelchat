@@ -4,82 +4,92 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tunnel Chat</title>
-    <link rel="stylesheet" href="libs/googleFont/icon.css"/>
-    <link href="libs/googleFont/font.css" rel="stylesheet">
-    <link rel="stylesheet" href="libs/bootstrap/bootstrap.min.css">
-    <script src="libs/bootstrap/bootstrap.bundle.min.js"></script>
-    <script src="libs/bootstrap/popper.min.js"></script>
-    <style>
-        .hideme {
-            display: none;
-        }
-    </style>
-    <script>
-        function validateInputBox() {
-            let username = document.getElementById("userNameInput").value;
-            const alert = document.querySelector(".alert");
-            alert.classList.add("hideme");
-            alert.innerHTML = ""; // Reset alert message
 
-            if (username.length < 2 || username.length > 20) {
-                alert.classList.remove("hideme");
-                if (username.length > 20) {
-                    alert.innerHTML = "Username is too long!";
-                } else {
-                    alert.innerHTML = "Username is too short!";
-                }
-            }
-        }
+    <link rel="icon" type="image/svg" href="icons/default/source.svg">
+    <link rel="manifest" href="manifest.json"/>
 
-        function redirectToChat(intent) {
-            let username = document.getElementById("userNameInput").value;
-            let debug = document.getElementById("debugCheckbox").checked;
-            let encryption = document.getElementById("encryptionCheckbox").checked;
-            if (username.length >= 2 && username.length <= 20) {
-                let url = `chat/index.html?intent=${intent}&username=${encodeURIComponent(username)}&debug=${debug}&encryption=${encryption}`;
-                window.location.href = url;
-            } else {
-                validateInputBox();
-            }
-        }
-    </script>
+    <!-- ios support -->
+    <link rel="apple-touch-icon" href="icons/default/16.png"/>
+    <link rel="apple-touch-icon" href="icons/default/24.png"/>
+    <link rel="apple-touch-icon" href="icons/default/32.png"/>
+    <link rel="apple-touch-icon" href="icons/default/48.png"/>
+    <link rel="apple-touch-icon" href="icons/default/64.png"/>
+    <link rel="apple-touch-icon" href="icons/default/128.png"/>
+    <link rel="apple-touch-icon" href="icons/default/256.png"/>
+    <link rel="apple-touch-icon" href="icons/default/512.png"/>
+    <meta name="apple-mobile-web-app-status-bar" content="#3F5DAB"/>
+    <meta name="theme-color" content="#3F5DAB" />
+
+    <link rel="stylesheet" href="lib/bulma.min.css">
+    <link rel="stylesheet" href="lib/bluma-checkbox.css">
+    <link rel="stylesheet" href="lib/googleIcon.css">
+    <script src="index.js"></script>
 </head>
-<body>
-    <div class="container mt-5">
-        <div class="row justify-content-center">
-            <div class="col-md-8 col-lg-6">
-                <h2 class="text-center">Welcome to Tunnel Chat!</h2>
-                <h3 class="text-center">What is your name?</h3>
 
-                <div class="mb-3">
-                    <input class="form-control" type="text" id="userNameInput" placeholder="username" oninput="validateInputBox();">
-                </div>
+<body class="is-flex is-flex-direction-column 
+is-justify-content-center is-align-items-center m-3">
 
-                <div class="alert alert-dismissible alert-danger hideme">
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    <strong>Oh snap!</strong> 
-                </div>
+    <div style="width: 60%;">
+        <h1 class="title is-1">Tunnel Chat</h1>
+        <p class="subtitle">A simple chat application.</p>
+        <hr>
 
-                <div class="d-flex justify-content-center">
-                    <div class="btn-group mb-3" role="group" aria-label="Basic checkbox toggle button group">
-                        <input type="checkbox" class="btn-check" id="debugCheckbox" autocomplete="off">
-                        <label class="btn btn-primary" for="debugCheckbox">Debug</label>
-                        <input type="checkbox" class="btn-check" id="encryptionCheckbox" autocomplete="off">
-                        <label class="btn btn-primary" for="encryptionCheckbox">Encryption</label>
-                    </div>
-                </div>
-
-                <h4 class="text-center">To get started, do you want to create a new chatroom, or join one?</h4>
-                <div class="d-flex justify-content-center mb-3">
-                    <button id="createButton" class="btn btn-primary me-2" onclick="redirectToChat('create')">
-                        <span class="material-symbols-outlined">add</span> Create
-                    </button>
-                    <button id="joinButton" class="btn btn-secondary" onclick="redirectToChat('join')">
-                        <span class="material-symbols-outlined">login</span> Join
-                    </button>
-                </div>
-            </div>    
+        <h1 class="title">Select <i>your</i> username.</h1>
+        
+        <div class="control has-icons-left">
+            <input class="input is-medium" type="text" id="usernameInput" placeholder="username123" oninput="validate();"/>
+            <div class="mIcon icon is-small is-left">
+                <span class="mIcon m-2">badge</span>
+            </div>
         </div>
+
+        <br>
+        
+        <h1 class="title">Join a tunnel</h1>
+        <p class="subtitle">Enter a tunnel ID to join, it can be anything.</p>
+
+        <div class="control has-icons-left">
+            <input class="input is-medium" type="text" id="tunnelInput" oninput="validate();" placeholder="tunnel123"/>
+            <div class="mIcon icon is-small is-left">
+                <span class="mIcon m-2">groups</span>
+            </div>
+        </div>
+
+        <br>
+        <br>
+
+        <h1 class="title is-4">Extra Configuration</h1>
+
+        <div class="b-checkbox checkbox control" title="TunnelChat uses RSA-2048, but public keys are transmitted in a way visible to the server. 
+        A malicious server could potentially intercept and pretend to be another party. 
+        You should verify another user's idenity before commnicating with them.">
+            <input type="checkbox" id="encryptionInput">
+            <label for="encryptionInput" class="check mx-0"></label>
+            <label for="encryptionInput" class="control-label">
+                <span class="mIcon icon is-left is-small has-text-primary mr-4 mt-2 is-size-3">encrypted</span>
+            </label>
+            <label for="encryptionInput">
+                <p class="mt-2 ml-1 has-text-grey-lighter is-size-5">Encryption</p>
+            </label>
+        </div>
+
+        <div class="b-checkbox checkbox control" disabled>
+            <input type="checkbox" id="compressionInput" disabled>
+            <label for="compressionInput" class="check"></label>
+            <label for="compressionInput" class="control-label">
+                <span class="mIcon icon is-left is-small has-text-primary mr-4 mt-2 is-size-3">inventory_2</span>
+            </label>
+            <label for="compressionInput">
+                <p class="mt-2 ml-1 has-text-grey-lighter is-size-5">Compression</p>
+            </label>
+        </div>
+
+        <br>
+        <br>
+
+        <h2 class="subtitle has-text-danger" id="validateMessage" ></h2>
+        <button class="button is-large is-link is-responsive is-fullwidth" id="startButton" onclick="sendData();">Start Chatting</button>
     </div>
+
 </body>
 </html>

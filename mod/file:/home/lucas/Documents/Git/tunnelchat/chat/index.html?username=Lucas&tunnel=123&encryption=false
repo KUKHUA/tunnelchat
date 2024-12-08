@@ -21,9 +21,8 @@
 
     <link rel="stylesheet" href="../lib/bulma.min.css">
     <link rel="stylesheet" href="../lib/bluma-checkbox.css">
-    <script src="../lib/googleIcon.css"></script>
-    <link rel="stylesheet" href="index.css">
-    
+    <link rel="stylesheet" href="../lib/googleIcon.css">
+
     <script src="index.js"></script>
     <script src="../lib/purify.min.js"></script>
     <script src="../lib/marked.min.js"></script>
@@ -55,7 +54,7 @@ is-justify-content-center is-align-items-center m-3">
   </div>
 
   <div class="card">
-  <footer class="card-footer vertical-container" id="messageContainer">
+  <footer class="card-footer" id="messageContainer">
 
     <div class="card">
       <div class="card-content p-1 m-1">
@@ -77,13 +76,13 @@ is-justify-content-center is-align-items-center m-3">
     <div class="column ml-3 m-0 p-0">
       <textarea class="textarea" placeholder="e.g. Hello world" id="messageInput" rows="3" oninput="validateTooMany()"></textarea>
     </div>
-    
+
     <button onclick="sendMessage();" class="button is-responsive is-primary 
       is-dark is-fullwidth has-icons-left column 
-      mr-3 m-0 p-0 is-1" id="sendButton">
-      Send
+      mr-3 m-0 p-0 is-1 control has-icons-left" id="sendButton">
+      <span class="mIcon icon is-left is-small has-text-primary">send</span> Send
     </button>
-  </div>
+    </div>
 
   </div>
   </div>

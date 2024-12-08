@@ -18,7 +18,7 @@ Tunnel Chat is a web-based chat application that allows users to create and join
 
 ### Usage
 
-1. Go to the [Tunnel Chat website](https://chat-beta.basicfan.eu.org/).
+1. Go to the [Tunnel Chat website](https://chat.basicfan.eu.org/).
 2. Enter your username and choose to create a new chat room or join an existing one using a tunnel ID.
 
 
@@ -32,11 +32,11 @@ Contributions are welcome! Please open an issue or submit a pull request on GitH
 
 ## License
 
-This project is licensed under the Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0) license. For more information, see the [LICENSE](LICENSE) file.
+This project is licensed under the Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0) license. For more information, see the [LICENSE](LICENSE) file. Libraries used in this project may have their own licenses. Please refer to the respective library documentation for more information.
 
 ## Acknowledgements
 
-- [Bootstrap](https://getbootstrap.com/)
+- [Bluma](https://bulma.io/) MIT License
+- [Feather Icons](https://feathericons.com/) MIT License
 - [DOMPurify](https://github.com/cure53/DOMPurify)
 - [Marked](https://github.com/markedjs/marked)
-- [WinBox.js](https://github.com/nextapps-de/winbox)
