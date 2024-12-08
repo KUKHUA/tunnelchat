@@ -27,6 +27,8 @@ async function initializeTunnel() {
         tunnel.connect();
 
         updateTitleUi();
+        registerKeyBinds();
+        history.pushState({}, document.title, window.location.pathname);
     } catch (error) {
         displayMessage("Error Log", new Date().toLocaleTimeString(), `Error in initialization: ${error}`);
     }
@@ -145,6 +147,104 @@ function updateTitleUi(){
         nameDisplay.innerHTML = `You are ${userName} in room <i>${userTunnel}</i>`;
     } catch (error) {
         displayMessage("Error Log", new Date().toLocaleTimeString(), `Error in updateTitleUi: ${error}`);
+    }
+}
+
+function changeUsername(){
+    try {
+        let newUsername = prompt("Enter your new username:", userName);
+
+        while(newUsername.length < 3 || newUsername.length > 20){
+            newUsername = prompt("Username must be between 3 and 20 characters:", userName);
+        }
+
+        userName = DOMPurify.sanitize(newUsername);
+        localStorage.setItem("username", userName);
+        updateTitleUi();
+    } catch (error) {
+        displayMessage("Error Log", new Date().toLocaleTimeString(), `Error in changeUsername: ${error}`);
+    }
+}
+
+async function changeTunnel(){
+    try {
+        if (tunnel) {
+            tunnel.close();
+        }
+
+        let newTunnel = prompt("Enter the tunnel you want to join:", userTunnel);
+        if (!newTunnel) {
+            displayMessage("Error Log", new Date().toLocaleTimeString(), "No tunnel entered.");
+            return;
+        }
+
+        userTunnel = DOMPurify.sanitize(newTunnel);
+        localStorage.setItem("tunnel", userTunnel);
+        
+        tunnel = new TunnelConnection("https://lluck.hackclub.app", userTunnel, "main", 
+        processMessage, { encryption: userEncryption });
+
+        await tunnel.create();
+        await tunnel.init();
+        tunnel.connect();
+
+        updateTitleUi();
+        displayMessage("System", new Date().toLocaleTimeString(), `You have switched to the tunnel **${userTunnel}**`);
+    } catch (error) {
+        displayMessage("Error Log", new Date().toLocaleTimeString(), `Error in changeTunnel: ${error}`);
+    }
+}
+
+async function downloadChatLog(){
+    try {
+        let chatLog = document.getElementById("messageContainer").innerHTML;
+        let cssContent = await fetch('https://cdnjs.cloudflare.com/ajax/libs/bulma/1.0.2/css/bulma.min.css').then(response => response.text());
+        let fullContent = `
+            <html>
+            <head>
+                <title>Chat Log for Tunnel ${userTunnel}</title>
+                <style>${cssContent}</style>
+            </head>
+            <body>
+            <h3 class="title is-3">Chat Log for Tunnel ${userTunnel}</h3>
+            <h4 class="subtitle is-5">downloaded at ${new Date().toLocaleTimeString()} by ${userName}</h4>
+            ${chatLog}
+            </body>
+            </html>
+        `;
+        let blob = new Blob([fullContent], {type: "text/html"});
+        let url = URL.createObjectURL(blob);
+        let a = document.createElement("a");
+        a.href = url;
+        a.download = `chatlog-${userTunnel}.html`;
+        a.click();
+        URL.revokeObjectURL(url);
+    } catch (error) {
+        displayMessage("Error Log", new Date().toLocaleTimeString(), `Error in downloadChatLog: ${error}`);
+    }
+}
+
+function registerKeyBinds(){
+    try {
+        document.addEventListener("keydown", (event) => {
+            if (event.key === "Enter" && event.ctrlKey) {
+                sendMessage();
+            } else if(event.key === "arrowUp")
+                getLastMessage()
+        });
+    } catch (error) {
+        displayMessage("Error Log", new Date().toLocaleTimeString(), `Error in registerKeyBinds: ${error}`);
+    }
+}
+
+function getLastMessage(){
+    try {
+        let messageContainer = document.getElementById("messageContainer");
+        let input = document.getElementById("messageInput");
+        let lastMessageInnner = messageContainer.lastElementChild.querySelector(".content").lastElementChild;
+        input.value = lastMessageInnner.innerHTML;
+    } catch (error) {
+        displayMessage("Error Log", new Date().toLocaleTimeString(), `Error in getLastMessage: ${error}`);
     }
 }
 

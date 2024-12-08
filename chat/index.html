@@ -6,7 +6,8 @@
     <title>Tunnel Chat</title>
 
     <link rel="icon" type="image/svg" href="../icons/default/source.svg">
-
+    <link rel="manifest" href="../manifest.json"/>
+    
     <!-- ios support -->
     <link rel="apple-touch-icon" href="../icons/default/16.png"/>
     <link rel="apple-touch-icon" href="../icons/default/24.png"/>
@@ -36,39 +37,34 @@ is-justify-content-center is-align-items-center m-3">
 
  <div style="width: 85%;">
 
-  <h1 class="title is-3" id="titleNameDipslay">You are... not in a tunnel</h1>
+  <h1 class="title is-1">Tunnel Chat</h1>
+  <h3 class="subtitle is-3" id="titleNameDipslay">You are... not in a tunnel</h3>
 
-  <div class="card is-size-5-desktop is-size-5-tablet">
-    <footer class="card-footer">
-      <button class="button is-responsive is-fullwidth 
-      is-rounded is-link is-dark m-1" 
-      >Change Username</button>
-
-      <button class="button is-responsive is-fullwidth 
-      is-rounded is-info is-dark m-1" 
-      >Join a Different Tunnel</button>
-
-      <button class="button is-responsive is-fullwidth 
-      is-info is-rounded is-warning is-dark m-1" 
-      >Download Chat Log</button>
-    </footer>
-  </div>
+  <div class="tabs is-toggle is-toggle-rounded is-centered mb-1 mt-0">
+    <ul>
+        <li onclick="changeUsername();">
+            <a class="has-text-link has-background-link-dark">
+                <span>Change Username</span>
+            </a>
+        </li>
+        <li onclick="changeTunnel();">
+            <a class="has-text-info has-background-info-dark">
+                <span>Join a Different Tunnel</span>
+            </a>
+        </li>
+        <li onclick="downloadChatLog();">
+            <a class="has-text-warning has-background-warning-dark">
+                <span>Download Chat Log</span>
+            </a>
+        </li>
+    </ul>
+</div>
 
   <div class="card">
   <footer class="card-footer vertical-container" id="messageContainer">
-
-    <div class="card">
-      <div class="card-content p-1 m-1">
-        <div class="content">
-          <p class="title is-5">Username</p>
-          <p class="subtitle is-7 has-text-info p-0 m-0"><i>sent at 11:55 AM</i></p>
-          <p class="subtile p-0 m-0">This is an example message </p>
-        </div>
-      </div>
-    </div>
+  </div>
 
   </footer>
-  </div>  
 
   <br>
 
@@ -78,12 +74,13 @@ is-justify-content-center is-align-items-center m-3">
       <textarea class="textarea" placeholder="e.g. Hello world" id="messageInput" rows="3" oninput="validateTooMany()"></textarea>
     </div>
     
-    <button onclick="sendMessage();" class="button is-responsive is-primary 
-      is-dark is-fullwidth has-icons-left column 
+    <button onclick="sendMessage();" class="button is-responsive
+       is-fullwidth column has-background-success-dark has-text-success
       mr-3 m-0 p-0 is-1" id="sendButton">
       Send
     </button>
   </div>
+</div>  
 
   </div>
   </div>
